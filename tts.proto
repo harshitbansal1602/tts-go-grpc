@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+package bridge;
+option go_package = "example.com/bridge";
+
+service Bridge {
+    // Get full text to speech with speech streamed in parts.
+    rpc GetSpeechStream(Text) returns (stream Speech) {}
+
+    // Get text to speech of the whole text in one go.
+    rpc GetSpeech(Text) returns (Speech) {}
+
+    // Stream text with appropriate part number to get speech streamed back.
+    rpc GetPartTextToSpeech(stream Text) returns (stream Speech) {}
+
+    rpc DownloadBarkModel(google.protobuf.Empty) returns (google.protobuf.Empty) {}
+}
+
+message Text {
+    // text to be converted to speech.
+    string text = 1;
+
+    // Zero indexed part number of text while streaming Text (used for skipping purpose), put 0 i fnot streaming.
+    int32 part = 2;
+}
+
+message Speech {
+    // speech in byte representation
+    bytes speech = 1;
+
+    // length of speech in seconds
+    int32 length = 2;
+}
+
+
+
