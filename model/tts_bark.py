@@ -1,3 +1,4 @@
+import io
 import numpy as np
 from scipy.io.wavfile import write as write_wav
 
@@ -36,7 +37,12 @@ class BarkTTS():
 
             audio_array = semantic_to_waveform(semantic_tokens, history_prompt=self.SPEAKER,)
             pieces += [audio_array, silence.copy()]
-        return np.concatenate(pieces)
+        
+        pieces = np.concatenate(pieces)
+        wav_file = io.BytesIO()
+        write_wav(wav_file, SAMPLE_RATE, pieces)
+        wav_file.seek(0)
+        return wav_file.read()
     
     def write_to_disk(self, audio_array, filename):
         write_wav("../outputs/" + str(filename) + ".wav", SAMPLE_RATE, audio_array)

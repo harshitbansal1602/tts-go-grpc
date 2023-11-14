@@ -2,6 +2,7 @@ import grpc
 import tts_pb2
 import tts_pb2_grpc
 from concurrent import futures
+import tts_bark
 
 class BridgeServicer(tts_pb2_grpc.BridgeServicer):
     def __init__(self) -> None:
@@ -11,12 +12,15 @@ class BridgeServicer(tts_pb2_grpc.BridgeServicer):
         return
     
     def GetSpeech(self, request: tts_pb2.Text, context):
-        return
+        model = tts_bark.BarkTTS()
+        speechArray = model.multiline_tts(request.text)
+        return tts_pb2.Speech(speech=speechArray, length=speechArray.__len__())
     
     def GetPartTextToSpeech(self, request, context):
         return
     
-    def DownloadModels(self, request, context):
+    def DownloadBarkModel(self, request, context):
+        tts_bark.BarkTTS()
         return
 
 def serve():
@@ -24,6 +28,7 @@ def serve():
     tts_pb2_grpc.add_BridgeServicer_to_server(BridgeServicer(), server)
     server.add_insecure_port("[::]:50051")
     server.start()
+    print("Started server...")
     server.wait_for_termination()
 
 if __name__ == "__main__":
