@@ -17,7 +17,7 @@ class BarkTTS():
         self.GEN_TEMP = 0.6
         self.SPEAKER = "v2/en_speaker_6"
         self.SILENCE_TIME_SECS = 0.25
-        self.SAMPLE_RATE =  SAMPLE_RATE
+        self.SAMPLE_RATE =  192_000
         pass
 
     def multiline_tts(self, text):
@@ -25,7 +25,7 @@ class BarkTTS():
         script = processing.flatten(text)
         sentences = processing.tokenize(script)
 
-        silence = np.zeros(int(self.SILENCE_TIME_SECS * SAMPLE_RATE))  # quarter second of silence
+        silence = np.zeros(int(self.SILENCE_TIME_SECS * self.SAMPLE_RATE))  # quarter second of silence
         pieces = []
         for sentence in sentences:
             semantic_tokens = generate_text_semantic(
@@ -40,12 +40,12 @@ class BarkTTS():
         
         pieces = np.concatenate(pieces)
         wav_file = io.BytesIO()
-        write_wav(wav_file, SAMPLE_RATE, pieces)
+        write_wav(wav_file, self.SAMPLE_RATE, pieces)
         wav_file.seek(0)
         return wav_file.read()
     
     def write_to_disk(self, audio_array, filename):
-        write_wav("../outputs/" + str(filename) + ".wav", SAMPLE_RATE, audio_array)
+        write_wav("../outputs/" + str(filename) + ".wav", self.SAMPLE_RATE, audio_array)
         return
 
 

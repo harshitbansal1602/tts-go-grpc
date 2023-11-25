@@ -3,6 +3,7 @@ import tts_pb2
 import tts_pb2_grpc
 from concurrent import futures
 import tts_bark
+import google.protobuf.empty_pb2
 
 class BridgeServicer(tts_pb2_grpc.BridgeServicer):
     def __init__(self) -> None:
@@ -21,7 +22,7 @@ class BridgeServicer(tts_pb2_grpc.BridgeServicer):
     
     def DownloadBarkModel(self, request, context):
         tts_bark.BarkTTS()
-        return
+        return google.protobuf.empty_pb2.Empty()
 
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=5))
