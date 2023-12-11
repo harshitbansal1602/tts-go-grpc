@@ -17,6 +17,7 @@ func main() {
 	http.HandleFunc("/init", handlers.InitModels)
 	http.HandleFunc("/speech", handlers.GetSpeech)
 	log.Printf("started server")
+
 	err := http.ListenAndServe(":8080", nil)
 	if errors.Is(err, http.ErrServerClosed) {
 		log.Printf("server closed\n")
